@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load messages_filters %}
+
+{% block content %}
+    <img src="{{ image.docfile.url }}" style="width:304px;height:228px;">
+    {{ image.day_score|get_day_or_night_from_score }}
+
+    {% if not submited_value %}
+    <form action="{% url 'detail' image_id=image.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>{{ form.non_field_errors }}</p>
+        <p>{{ form.choice_field.label_tag }}</p>
+        <p>
+            {{ form.choice_field.errors }}
+            {{ form.choice_field }}
+        </p>
+        <p><input type="submit" value="Upload" /></p>
+    </form>
+    {% else %}
+        Thank you
+    {% endif %}
+
+{% endblock content %}
+
+{% block gallery %}
+    {% include "gallery.html" with documents=documents %}
+{% endblock gallery %}

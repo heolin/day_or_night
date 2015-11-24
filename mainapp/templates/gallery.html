@@ -1,0 +1,14 @@
+{% load messages_filters %}
+{% block gallery %}
+{% if documents %}
+    <ul>
+    {% for document in documents %}
+    <li>
+        <a href="{% url 'detail' image_id=document.id %}"><img src="{{ document.docfile.url }}" style="width:304px;height:228px;"></a> {{ document.day_score|get_day_or_night_from_score }}
+    </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No documents.</p>
+{% endif %}
+{% endblock gallery %}

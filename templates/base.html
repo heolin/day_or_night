@@ -1,0 +1,14 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    </head>
+    <body>
+    <!--<img src="{% static 'images/a.gif' %}" />-->
+    {% block content %}
+    {% endblock content %}
+    {% block gallery %}
+    {% endblock gallery %}
+    </body>
+</html>
