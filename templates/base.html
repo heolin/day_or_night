@@ -2,13 +2,18 @@
 <html>
     <head>
         <title>Test</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+        {% include "base_header.html" %}
     </head>
     <body>
-    <!--<img src="{% static 'images/a.gif' %}" />-->
-    {% block content %}
-    {% endblock content %}
-    {% block gallery %}
-    {% endblock gallery %}
+        <div class="row">
+            <div class="row">
+                {% block content %}
+                {% endblock content %}
+            </div>
+            <div class="row">
+                {% block gallery %}
+                {% endblock gallery %}
+            </div>
+        </div>
     </body>
 </html>

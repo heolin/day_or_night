@@ -9,3 +9,6 @@ def get_day_or_night_from_score(value):
     else:
         return "NIGHT"
 
+@register.filter(name='index')
+def index(List, i):
+    return List[int(i)]

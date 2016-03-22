@@ -1,0 +1,78 @@
+.image-info-label {
+    margin-top: 10px;
+    padding: .2em .6em .3em;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: .3em;
+    width: 100%;
+}
+
+.image-info-label-badge {
+    color: #000;
+    background-color: #fff;
+}
+
+.image-icon {
+    border-radius: .3em;
+    overflow: hidden;
+}
+
+.image-icon-img {
+    width:100%;
+    height:170px;
+}
+
+
+.col-centered {
+    float: none;
+    margin: 0 auto;
+}
+
+.content-block {
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
+
+.content-block-img {
+    width: 100%;
+    height: 300px;
+    margin-top: 30px;
+}
+
+.content-block-main {
+    width:440px;
+    margin-bottom: 30px;
+}
+
+.choice-field-label {
+    width:100px;
+    background-color: #e7e7e7;
+}
+
+.choice-field-input {
+    width:180px;
+}
+
+.btn-choice-submit {
+    width: 77px;
+    margin-top: 5px;
+}
+
+.choice-input-group {
+    margin-top: 5px;
+}
+
+
+.bg-success {
+    background-color: #5cb85c;
+}
+
+.fg-white {
+    color: #fff;
+}
+
+.btn-upload {
+    padding-top: 4px;
+    height:30px;
+}
+

@@ -1,14 +1,48 @@
 {% load messages_filters %}
 {% block gallery %}
 {% if documents %}
-    <ul>
-    {% for document in documents %}
-    <li>
-        <a href="{% url 'detail' image_id=document.id %}"><img src="{{ document.docfile.url }}" style="width:304px;height:228px;"></a> {{ document.day_score|get_day_or_night_from_score }}
-    </li>
-    {% endfor %}
-    </ul>
+    <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                {% for document in documents %}
+                <div class="col-md-3">
+                    <div class="image-icon">
+                        <a href="{% url 'detail' document_id=document.0.id %}">
+                            <img class="image-icon-img" src="{{ document.0.docfile.url }}">
+                        </a>
+                    </div>
+                    <div class="image-info-label label-{% if not document.1 %}default{% elif document.0.day_score|get_day_or_night_from_score == "DAY" %}warning{% else %}primary{% endif %}">
+                        {% if document.1 %}
+                            <div class="badge image-info-label-badge">
+                                {{ document.0.day_score|get_day_or_night_from_score }}
+                            </div>
+                            <div class="badge image-info-label-badge" data-toggle="tooltip" data-html="true" data-placement="bottom" title="Systems result.</br>Score close to 0.0 means night.</br>Score close to 1.0 means day.">
+                                score: {{ document.0.day_score|floatformat:3  }}
+                            </div>
+                            <div class="badge image-info-label-badge bg-success fg-white" data-html="true" data-toggle="tooltip" data-placement="bottom" title="Your choice">
+                                {{ document.1.day_score|get_day_or_night_from_score }}
+                            </div>
+                        {% else %}
+                            <div class="badge image-info-label-badge" data-html="true" data-toggle="tooltip" data-placement="bottom" title="You need to send your anwser first to see how the System responded.">
+                                ?
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                </div>
+                <div class="panel-heading"><a href="/" class="btn btn-primary"><i class="fa fa-home"></i> Home</a></div>
+            </div>
+        </div>
+    <div class="col-md-2"></div>
 {% else %}
     <p>No documents.</p>
 {% endif %}
 {% endblock gallery %}
+
+<script type = 'text/javascript'>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>

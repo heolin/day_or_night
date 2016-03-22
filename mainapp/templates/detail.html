@@ -2,23 +2,47 @@
 {% load messages_filters %}
 
 {% block content %}
-    <img src="{{ image.docfile.url }}" style="width:304px;height:228px;">
-    {{ image.day_score|get_day_or_night_from_score }}
+<div class="col-md-4 col-md-offset-4 content-block">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="col-centered content-block-main">
+                <div>
+                    <img class="content-block-img" src="{{ document.0.docfile.url }}">
+                </div>
 
-    {% if not submited_value %}
-    <form action="{% url 'detail' image_id=image.id %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <p>{{ form.non_field_errors }}</p>
-        <p>{{ form.choice_field.label_tag }}</p>
-        <p>
-            {{ form.choice_field.errors }}
-            {{ form.choice_field }}
-        </p>
-        <p><input type="submit" value="Upload" /></p>
-    </form>
-    {% else %}
-        Thank you
-    {% endif %}
+                {% if not document.1 %}
+                <form action="{% url 'detail' document_id=document.0.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div id="id_choice_field" class="btn-group choice-input-group" data-toggle="buttons">
+                        <label class="btn btn-warning choice-field-input">
+                            <input type="radio" name="choice_field" id="id_choice_field_1" value="1.0" autocomplete="off" checked>DAY</input>
+                        </label>
+                        <label class="btn btn-primary choice-field-input">
+                            <input type="radio" name="choice_field" id="id_choice_field_0" value="0.0" autocomplete="off">NIGHT</input>
+                        </label>
+                    </div>
+                    <input class="btn btn-success btn-choice-submit" type="submit" value="Send" />
+                </form>
+
+
+                {% else %}
+                    <div class="image-info-label label-{% if document.0.day_score|get_day_or_night_from_score == "DAY" %}warning{% else %}primary{% endif %}">
+                        <div class="badge image-info-label-badge">
+                            {{ document.0.day_score|get_day_or_night_from_score }}
+                        </div>
+                        <div class="badge image-info-label-badge" data-toggle="tooltip" data-html="true" data-placement="bottom" title="Systems result.</br>Score close to 0.0 means night.</br>Score close to 1.0 means day.">
+                            score: {{ document.0.day_score|floatformat:3  }}
+                        </div>
+                        <div class="badge image-info-label-badge bg-success fg-white" data-html="true" data-toggle="tooltip" data-placement="bottom" title="Your choice">
+                            {{ document.1.day_score|get_day_or_night_from_score }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock content %}
 

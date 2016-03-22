@@ -1,65 +1,55 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
 from .models import Document, DocumentClassification
 from .forms import DocumentForm, ClassificationForm
+from .views_utils import get_client_ip, get_lastest_documents, check_if_submited_list
 from neuralnetwork import get
 
+import imghdr
 
-def list(request):
+
+def upload(request):
+    ip = get_client_ip(request)
+
     documents = get_lastest_documents()
+
+    documents_submitions = check_if_submited_list(list(documents), ip)
+
+    wrong_file = False
 
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             newdoc = Document(docfile = request.FILES['docfile'], day_score = get(request.FILES['docfile']))
             newdoc.save()
-        return HttpResponseRedirect(reverse('mainapp.views.detail', kwargs={'image_id':newdoc.id}))
-    else:
-        form = DocumentForm()
+            return HttpResponseRedirect(reverse('mainapp.views.detail', kwargs={'document_id':newdoc.id}))
 
-    return render_to_response(
-        'index.html',
-        {'documents': documents, 'form': form},
-        context_instance=RequestContext(request)
-    )
+    form = DocumentForm()
+
+    return render(request, 'upload.html', {'documents': documents_submitions.items(), 'form': form, 'wrong_file':wrong_file})
 
 
-def detail(request, image_id):
-    document = Document.objects.get(id=image_id)
-    documents = get_lastest_documents()
+def detail(request, document_id):
     ip = get_client_ip(request)
-    submited_value = check_if_already_submited_value(document, ip)
 
-    if request.method == 'POST' and not submited_value:
+    document = Document.objects.get(id=document_id)
+    documents = get_lastest_documents()
+
+    documents_submitions = check_if_submited_list(list(documents)+[document], ip)
+
+    if request.method == 'POST' and not documents_submitions[document]:
         form = ClassificationForm(request.POST)
         if form.is_valid():
-            submited_value = True
+            documents_submitions[document] = True
             score = request.POST.getlist('choice_field')[0]
             classification = DocumentClassification(document=document, score=score, ip=ip)
             classification.save()
     else:
         form = ClassificationForm()
 
-    return render_to_response(
-        'detail.html',
-        {'documents': documents, 'form': form, 'image':document, "submited_value":submited_value},
-        context_instance=RequestContext(request)
-    )
+    document_info = (document, documents_submitions[document])
+    return render(request, 'detail.html', {'documents': documents_submitions.items(), 'form': form, 'document':document_info})
 
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
-
-def get_lastest_documents(last=5):
-    return Document.objects.all().order_by('-created_at')[:last]
-
-def check_if_already_submited_value(document, ip):
-    return len(DocumentClassification.objects.filter(document=document).filter(ip=ip)) != 0
